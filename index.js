@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 
 app.get('/',(req,res)=> {
-    res.json('Hello from workflow gitactions')
+    res.json('Bonjour de la part de gitactions')
 })
 
 app.get('/user',(req,res)=> {
