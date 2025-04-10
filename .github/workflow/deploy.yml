@@ -1,0 +1,48 @@
+name: CI/CD
+# lier à 
+on:
+  push: 
+    branches: [master,main] # Déclenche le drploiement à chaque push sur la branche master ou main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+        #Etapes du CI
+    steps:
+      - name: cloner le code 
+        uses: actions/checkout@v3   # Télécharge le code du dépôt GitHub dans l'environnement du workflow
+
+      - name: installer node jobs
+        uses: actions/setup-node@v3 #Installer Node.js version 22 pour exécuter l'app
+        with:node-version: "21.4.0"
+
+      - name: Installer les dépendances
+        run: npm installer          # installer les modules définis dans notre package.json
+
+      # - name: Lancer les tests
+      #   run: npm test                # Executer mes tests
+
+        #Etapes du CD
+
+        # Deploiement sur render
+      - name: Trigger Render Deploy Hook
+        # Envoie une requête POST au webhook de Render
+        # L'URL est stockée dans les secrets GitHub (sécurité)
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      # - name: Déploiement via SSH sur VPS
+      #   uses: appleboy/ssh-action@main # connection à un serveur avec ssh
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USER }}
+      #     key: ${{ secrets.SSH_KEY }}
+      #     port: ${{ secrets.SSH_PORT }}
+      #     script: # code qui sera exécuté automatiquement sur le vps
+      #     # va rentrer dans le dossier workflow et s'il n'existe pas va le créer avec la commande mkdir
+      #       cd ~/workflow || mkdir ~/workflow && cd ~/workflow 
+      #       git clone https://github.com/${{ github.repository }} . || git pull               
+      #       pm2 delete my_api_node || true
+      #       pm2 start index.js --name my_api_node
+      #       pm2 save
+      #       pm2 list
+
+            
